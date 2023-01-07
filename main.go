@@ -38,29 +38,28 @@ func main() {
 
 		if stats.Online {
 
-			err = setActivity(dg, *status, stats.Server.Name)
+			setActivity(dg, *status, stats.Server.Name)
 			time.Sleep(time.Duration(*loop) * time.Second)
 
-			err = setActivity(dg, *status, fmt.Sprintf("Players: %d/%d", stats.Players.Now, stats.Players.Max))
+			setActivity(dg, *status, fmt.Sprintf("Players: %d/%d", stats.Players.Now, stats.Players.Max))
 			time.Sleep(time.Duration(*loop) * time.Second)
 
 			for _, player := range stats.Players.Sample {
-				err = setActivity(dg, *status, player.Name)
+				setActivity(dg, *status, player.Name)
 				time.Sleep(time.Duration(*loop) * time.Second)
 			}
 		} else {
-			err = dg.UpdateGameStatus(0, "offline")
+			setActivity(dg, *status, "offline")
 			time.Sleep(time.Duration(*loop) * time.Second)
 		}
 	}
 }
 
-func setActivity(dg *discordgo.Session, status int, message string) (err error) {
-	err = dg.UpdateGameStatus(status, message)
+func setActivity(dg *discordgo.Session, status int, message string) {
+	err := dg.UpdateGameStatus(status, message)
 	if err != nil {
 		log.Printf("Unable to set activity: %s\n", err)
 	} else {
 		log.Printf("Set activity: %s\n", message)
 	}
-	return
 }
