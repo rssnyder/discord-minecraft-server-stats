@@ -37,7 +37,6 @@ services:
     environment:
       TOKEN: XXX..XXX
       DOMAIN: sdomain.tld
-      NAMES: true
       STATUS: 0
       LOOP: 5
 ```
