@@ -38,18 +38,18 @@ func main() {
 
 		if stats.Online {
 
-			err = setActivity(dg, *status, stats.Server.Name)
+			setActivity(dg, *status, stats.Server.Name)
 			time.Sleep(time.Duration(*loop) * time.Second)
 
-			err = setActivity(dg, *status, fmt.Sprintf("Players: %d/%d", stats.Players.Now, stats.Players.Max))
+			setActivity(dg, *status, fmt.Sprintf("Players: %d/%d", stats.Players.Now, stats.Players.Max))
 			time.Sleep(time.Duration(*loop) * time.Second)
 
 			for _, player := range stats.Players.Sample {
-				err = setActivity(dg, *status, player.Name)
+				setActivity(dg, *status, player.Name)
 				time.Sleep(time.Duration(*loop) * time.Second)
 			}
 		} else {
-			err = dg.UpdateGameStatus(0, "offline")
+			setActivity(dg, *status, "offline")
 			time.Sleep(time.Duration(*loop) * time.Second)
 		}
 	}
