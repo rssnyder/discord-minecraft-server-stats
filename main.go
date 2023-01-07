@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"time"
 
@@ -10,10 +11,9 @@ import (
 
 func main() {
 	token := flag.String("token", "", "discord bot token")
-	nickname := flag.String("nickname", "", "bot nickname")
-	activity := flag.String("activity", "", "bot activity")
+	domain := flag.String("domain", "", "server nickname")
 	status := flag.Int("status", 0, "0: playing, 1: listening")
-	refresh := flag.Int("refresh", 300, "seconds between refresh")
+	loop := flag.Int("loop", 60, "seconds between messages")
 	flag.Parse()
 
 	dg, err := discordgo.New("Bot " + *token)
@@ -28,44 +28,39 @@ func main() {
 		return
 	}
 
-	guilds, err := dg.UserGuilds(100, "", "")
-	if err != nil {
-		log.Println(err)
-		*nickname = ""
-	}
-	if len(guilds) == 0 {
-		*nickname = ""
-	}
-
-	ticker := time.NewTicker(time.Duration(*refresh) * time.Second)
-
 	for {
-		select {
-		case <-ticker.C:
-			if *nickname != "" {
-				for _, g := range guilds {
-					err = dg.GuildMemberNickname(g.ID, "@me", *nickname)
-					if err != nil {
-						log.Println(err)
-						continue
-					} else {
-						log.Printf("Set nickname in %s: %s\n", g.Name, *nickname)
-					}
-				}
+
+		stats, err := GetMcapiStats(*domain)
+		if err != nil {
+			log.Printf("%s", err)
+			time.Sleep(time.Duration(*loop) * time.Second)
+		}
+
+		if stats.Online {
+
+			err = setActivity(dg, *status, stats.Server.Name)
+			time.Sleep(time.Duration(*loop) * time.Second)
+
+			err = setActivity(dg, *status, fmt.Sprintf("Players: %d/%d", stats.Players.Now, stats.Players.Max))
+			time.Sleep(time.Duration(*loop) * time.Second)
+
+			for _, player := range stats.Players.Sample {
+				err = setActivity(dg, *status, player.Name)
+				time.Sleep(time.Duration(*loop) * time.Second)
 			}
-			if *activity != "" {
-				switch *status {
-				case 0:
-					err = dg.UpdateGameStatus(0, *activity)
-				case 1:
-					err = dg.UpdateListeningStatus(*activity)
-				}
-				if err != nil {
-					log.Printf("Unable to set activity: %s\n", err)
-				} else {
-					log.Printf("Set activity: %s\n", *activity)
-				}
-			}
+		} else {
+			err = dg.UpdateGameStatus(0, "offline")
+			time.Sleep(time.Duration(*loop) * time.Second)
 		}
 	}
+}
+
+func setActivity(dg *discordgo.Session, status int, message string) (err error) {
+	err = dg.UpdateGameStatus(status, message)
+	if err != nil {
+		log.Printf("Unable to set activity: %s\n", err)
+	} else {
+		log.Printf("Set activity: %s\n", message)
+	}
+	return
 }

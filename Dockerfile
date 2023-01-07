@@ -1,5 +1,5 @@
 FROM golang:1.18-alpine
-LABEL org.opencontainers.image.source https://github.com/rssnyder/discord-bot
+LABEL org.opencontainers.image.source https://github.com/rssnyder/discord-minecraft-server-stats
 
 WORKDIR /app
 
@@ -9,6 +9,6 @@ RUN go mod download
 
 COPY *.go ./
 
-RUN go build -o /discord-bot
+RUN go build -o /discord-minecraft-server-stats
 
-ENTRYPOINT /discord-bot -token "$TOKEN" -nickname "$NICKNAME" -activity "$ACTIVITY" -status "$STATUS" -refresh "$REFRESH"
+ENTRYPOINT /discord-minecraft-server-stats -token "$TOKEN" -domain "$DOMAIN" -status "$STATUS" -loop "$LOOP"

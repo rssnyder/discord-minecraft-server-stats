@@ -1,33 +1,29 @@
-# discord-bot
+# discord-minecraft-server-stats
 
-a simple discord bot that just changes its nickname and/or status
+a simple discord bot that displays information on a minecraft server
 
-![image](https://user-images.githubusercontent.com/7338312/172267762-4a725451-ac86-4f81-aa3a-6ddd88e7967c.png)
+currently: name, current/max players, and player names
 
-![GitHub all releases](https://img.shields.io/github/downloads/rssnyder/discord-bot/total?style=flat-square)
+uses [mcapi](https://mcapi.us) but also has internal functions for [mcsrvstat](https://api.mcsrvstat.us/)
 
 ```text
-Usage of ./discord-bot:
-  -activity string
-        bot activity
-  -nickname string
-        bot nickname
-  -refresh int
-        seconds between refresh (default 300)
+Usage of ./bot:
+  -domain string
+        server nickname
+  -loop int
+        seconds between messages (default 60)
   -status int
         0: playing, 1: listening
   -token string
         discord bot token
 ```
 
-make sure the bot has "change nickname" permissions in the server if using that feature
-
 ## docker
 
 ### command line
 
 ```shell
-docker run -e "TOKEN=XXX..XXX" -e "NICKNAME=some nickname" -e "ACTIVITY=some activity" -e "STATUS=0" -e "REFRESH=5" ghcr.io/rssnyder/discord-bot
+docker run -e "TOKEN=XXX..XXX" -e "DOMAIN=sdomain.tld" -e "STATUS=0" -e "LOOP=5" ghcr.io/rssnyder/discord-minecraft-server-stats
 ```
 
 ### docker compose
@@ -36,28 +32,28 @@ docker run -e "TOKEN=XXX..XXX" -e "NICKNAME=some nickname" -e "ACTIVITY=some act
 ---
 version: "3"
 services:
-  discord-bot:
-    image: ghcr.io/rssnyder/discord-bot
+  discord-minecraft-server-stats:
+    image: ghcr.io/rssnyder/discord-minecraft-server-stats
     environment:
       TOKEN: XXX..XXX
-      NICKNAME: some nickname
-      ACTIVITY: some activity
+      DOMAIN: sdomain.tld
+      NAMES: true
       STATUS: 0
-      REFRESH: 5
+      LOOP: 5
 ```
 
 ## command line
 
 ### download binary
 
-grab a download link from [here](https://github.com/rssnyder/discord-bot/releases).
+grab a download link from [here](https://github.com/rssnyder/discord-minecraft-server-stats/releases).
 ```shell
-curl -L https://github.com/rssnyder/discord-bot/releases/download/v<version>/discord-bot_<version>_<os>_<arch>.tar.gz -o discord-bot.tar.gz
-tar zxf discord-bot.tar.gz
+curl -L https://github.com/rssnyder/discord-minecraft-server-stats/releases/download/v<version>/discord-minecraft-server-stats_<version>_<os>_<arch>.tar.gz -o discord-minecraft-server-stats.tar.gz
+tar zxf discord-minecraft-server-stats.tar.gz
 ```
 
 ### run
 
 ```shell
-./discord-bot -token "XXX..XXX" -nickname "some nickname" -activity "some activity" -status "0" -refresh "5"
+./discord-minecraft-server-stats -token "XXX..XXX" -nickname "some nickname" -activity "some activity" -status "0" -refresh "5"
 ```
