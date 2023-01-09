@@ -14,6 +14,7 @@ func main() {
 	domain := flag.String("domain", "", "server nickname")
 	status := flag.Int("status", 0, "0: playing, 1: listening")
 	loop := flag.Int("loop", 60, "seconds between messages")
+	users := flag.Int("users", 5, "seconds between showing users")
 	flag.Parse()
 
 	dg, err := discordgo.New("Bot " + *token)
@@ -46,7 +47,7 @@ func main() {
 
 			for _, player := range stats.Players.Sample {
 				setActivity(dg, *status, player.Name)
-				time.Sleep(time.Duration(*loop) * time.Second)
+				time.Sleep(time.Duration(*users) * time.Second)
 			}
 		} else {
 			setActivity(dg, *status, "offline")
