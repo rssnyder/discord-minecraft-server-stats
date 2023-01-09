@@ -16,6 +16,8 @@ Usage of ./bot:
         0: playing, 1: listening
   -token string
         discord bot token
+  -users int
+        seconds between showing users (default 5)
 ```
 
 ## docker

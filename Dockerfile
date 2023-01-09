@@ -11,4 +11,4 @@ COPY *.go ./
 
 RUN go build -o /discord-minecraft-server-stats
 
-ENTRYPOINT /discord-minecraft-server-stats -token "$TOKEN" -domain "$DOMAIN" -status "$STATUS" -loop "$LOOP"
+ENTRYPOINT /discord-minecraft-server-stats -token "$TOKEN" -domain "$DOMAIN" -status "$STATUS" -loop "$LOOP" -users "$USERS"
