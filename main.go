@@ -42,6 +42,9 @@ func main() {
 			setActivity(dg, *status, stats.Server.Name)
 			time.Sleep(time.Duration(*loop) * time.Second)
 
+			setActivity(dg, *status, stats.Motd)
+			time.Sleep(time.Duration(*loop) * time.Second)
+
 			setActivity(dg, *status, fmt.Sprintf("Players: %d/%d", stats.Players.Now, stats.Players.Max))
 			time.Sleep(time.Duration(*loop) * time.Second)
 
